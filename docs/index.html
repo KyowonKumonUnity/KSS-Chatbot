@@ -9,7 +9,7 @@
   </head>
   <body style="text-align: center; padding: 0; border: 0; margin: 0;">
     <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
-    <script src="Build/Build.loader.js"></script>
+    <script src="Build/docs.loader.js"></script>
     <script>
       var meta = document.createElement('meta');
       meta.name = 'viewport';
@@ -25,9 +25,9 @@
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/Build.data.br",
-        frameworkUrl: "Build/Build.framework.js.br",
-        codeUrl: "Build/Build.wasm.br",
+        dataUrl: "Build/docs.data.br",
+        frameworkUrl: "Build/docs.framework.js.br",
+        codeUrl: "Build/docs.wasm.br",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "KyowonKumon",
         productName: "KSS-Chatbot",
