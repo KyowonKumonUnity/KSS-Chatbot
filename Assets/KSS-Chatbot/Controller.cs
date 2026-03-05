@@ -4,6 +4,7 @@ using echo17.EnhancedUI.EnhancedGrid;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 /// <summary>
 	/// Example showing a chat between two devices, each with their own grid.
@@ -32,12 +33,14 @@ using UnityEngine.UI;
 
         private List<Chat> _chats;
         private RectTransform _chatTemplateRectTransform;
+        private RectTransform _person1GridRt;
 
         void Awake()
         {
             Application.targetFrameRate = 60;
 
             _chatTemplateRectTransform = chatTemplateText.GetComponent<RectTransform>();
+            _person1GridRt = person1Grid.GetComponent<RectTransform>();
         }
 
         void Start()
@@ -75,12 +78,9 @@ using UnityEngine.UI;
         {
             // if the enter key is pressed, send the chat
 
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
             {
-                if (person1ChatInputField.isFocused)
-                {
-                    PersonSendButton_OnClick(1);
-                }
+                PersonSendButton_OnClick();
             }
         }
 
@@ -111,9 +111,10 @@ using UnityEngine.UI;
 
         public CellProperties GetCellProperties(EnhancedGrid grid, int dataIndex)
         {
+            Canvas.ForceUpdateCanvases();
             return new CellProperties()
             {
-                minSize = new Vector2(/*person1Grid.ScrollRect.content.rect.size.x*/canvasScaler.referenceResolution.x - 20, _chats[dataIndex].cellHeight),
+                minSize = new Vector2(_person1GridRt.rect.size.x - 20, _chats[dataIndex].cellHeight),
                 expansionWeight = 0f
             };
         }
@@ -127,9 +128,10 @@ using UnityEngine.UI;
 		/// Send the chat
 		/// </summary>
 		/// <param name="personID">Which device is sending</param>
-        public void PersonSendButton_OnClick(int personID)
+        public void PersonSendButton_OnClick(int personID = 1)
         {
             var chatInputField = person1ChatInputField;
+            if (string.IsNullOrWhiteSpace(chatInputField.text)) return;
 
             _AddChat(personID, chatInputField.text.Trim());
 
@@ -140,6 +142,8 @@ using UnityEngine.UI;
             person1Grid.RecalculateGrid(scrollNormalizedPositionY: 1f);
         }
 
+        private void _AddChat(string text) => _AddChat(1, text);
+        
         private void _AddChat(int personID, string text)
         {
             // turn on the template text UI element and set its text
