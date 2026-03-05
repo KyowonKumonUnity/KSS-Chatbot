@@ -1,12 +1,13 @@
 {
   "dependencies": {
+    "com.github.kou-yeung": "https://github.com/kou-yeung/WebGLInput.git?path=Assets/WebGLSupport",
     "com.neuecc.unirx": "7.1.0",
-    "com.unity.cinemachine": "3.1.6",
+    "com.unity.2d.psdimporter": "12.0.1",
+    "com.unity.addressables": "2.8.1",
     "com.unity.ide.rider": "3.0.39",
     "com.unity.inputsystem": "1.18.0",
-    "com.unity.timeline": "1.8.11",
+    "com.unity.nuget.newtonsoft-json": "3.2.2",
     "com.unity.ugui": "2.0.0",
-    "kr.lch.lchframework": "1.1.26",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
@@ -47,8 +48,7 @@
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.neuecc.unirx",
-        "kr.lch.lchframework"
+        "com.neuecc.unirx"
       ]
     }
   ]
