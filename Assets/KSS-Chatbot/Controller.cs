@@ -178,7 +178,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         var respond = string.Empty;
         for (var i = 0; i < retryCount && string.IsNullOrEmpty(respond); i++)
         {
-            using var request = UnityWebRequest.Post(!debugToggle.isActiveAndEnabled || !debugToggle ? AIChatUri : AIChatTestUri, body, "application/json");
+            using var request = UnityWebRequest.Post(!debugToggle.isActiveAndEnabled || !debugToggle.isOn ? AIChatUri : AIChatTestUri, body, "application/json");
             request.certificateHandler = new BypassCertificate();
             await request.SendWebRequest();
 
