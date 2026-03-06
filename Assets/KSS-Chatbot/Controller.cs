@@ -6,8 +6,12 @@ using Newtonsoft.Json;
 using TMPro;
 using UniRx;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+#if !UNITY_EDITOR && UNITY_WEBGL
+using System.Runtime.InteropServices;
+#endif
 
 /// <summary>
 /// Example showing a chat between two devices, each with their own grid.
@@ -20,21 +24,30 @@ using UnityEngine.UI;
 /// </summary>
 public class Controller : MonoBehaviour, IEnhancedGridDelegate
 {
+    private static readonly Uri AIChatUri = new("https://n8n.smartkumon.co.kr/webhook/create");
+    
+#if !UNITY_EDITOR && UNITY_WEBGL
+    [DllImport("__Internal")]
+    private static extern void InitCtrlEnterListener();
+#endif
+    
+    
+    
     public Loading loading;
     public CanvasScaler canvasScaler;
     public EnhancedGrid person1Grid;
     public GameObject chatFromMeCellPrefab;
     public GameObject chatFromOtherPersonCellPrefab;
     public RectOffset chatCellPadding;
-
+    
     /// <summary>
 	/// Template text label to calculate the text size based on Unity's
 	/// content size fitter component
 	/// </summary>
     public TMP_Text chatTemplateText;
-
+    
     public TMP_InputField person1ChatInputField;
-
+    
     private List<Chat> _chats;
     private RectTransform _chatTemplateRectTransform;
     private RectTransform _person1GridRt;
@@ -51,6 +64,9 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
 
     void Start()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        InitCtrlEnterListener();
+#endif
         person1Grid.InitializeGrid(this);
 
         _chats = new List<Chat>();
@@ -65,6 +81,18 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
 
         person1ChatInputField.ActivateInputField();
     }
+    
+#if UNITY_EDITOR
+    void Update()
+    {
+        // if the enter key is pressed, send the chat
+
+        if (Keyboard.current != null && Keyboard.current.ctrlKey.isPressed && Keyboard.current.enterKey.wasPressedThisFrame)
+        {
+            PersonSendButton_OnClick();
+        }
+    }
+#endif
     
     private void OnApplicationFocus(bool focus) => _isApplicationFocused = focus;
     
@@ -144,7 +172,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
                 new() { role = "user", content = chatInput}
             }
         });
-        using var request = UnityWebRequest.Post(new Uri("https://n8n.smartkumon.co.kr/webhook/create"), body, "application/json");
+        using var request = UnityWebRequest.Post(AIChatUri, body, "application/json");
         request.certificateHandler = new BypassCertificate();
         await request.SendWebRequest();
         var respond = request.result != UnityWebRequest.Result.Success 
