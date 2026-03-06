@@ -150,6 +150,9 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         _AddChat(1, chatInputFieldText);
 
         chatInputField.text = "";
+#if !UNITY_EDITOR && UNITY_WEBGL
+        chatInputField.GetComponent<WebGLSupport.WebGLInput>().SyncText();
+#endif
 
         // recalculate the grids, scrolling to the bottom
         
@@ -164,7 +167,6 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         isReceivingAIChat = true;
         loading.Show();
         
-        
         var body = JsonConvert.SerializeObject(new RequestAIChat
         {
             messages = new RequestAIChatMessage[]
@@ -172,13 +174,22 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
                 new() { role = "user", content = chatInput}
             }
         });
-        using var request = UnityWebRequest.Post(AIChatUri, body, "application/json");
-        request.certificateHandler = new BypassCertificate();
-        await request.SendWebRequest();
-        var respond = request.result != UnityWebRequest.Result.Success 
-            ? $"Request {request.result}: {request.error}"
-            : JsonConvert.DeserializeObject<ResultAIChat>(request.downloadHandler.text)?.output;
-        
+
+        const int retryCount = 3;
+        var respond = string.Empty;
+        for (var i = 0; i < retryCount && string.IsNullOrEmpty(respond); i++)
+        {
+            using var request = UnityWebRequest.Post(AIChatUri, body, "application/json");
+            request.certificateHandler = new BypassCertificate();
+            await request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+                respond = JsonConvert.DeserializeObject<ResultAIChat>(request.downloadHandler.text)?.output;
+            else if (i < retryCount - 1)
+                await Awaitable.WaitForSecondsAsync(1);
+            else
+                respond = $"Request {request.result}: {request.error}";
+        }
         
         loading.Hide();
         _AddChat(2, respond ?? string.Empty);
