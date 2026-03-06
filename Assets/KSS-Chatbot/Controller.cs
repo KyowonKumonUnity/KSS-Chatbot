@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 public class Controller : MonoBehaviour, IEnhancedGridDelegate
 {
     private static readonly Uri AIChatUri = new("https://n8n.smartkumon.co.kr/webhook/create");
+    private static readonly Uri AIChatTestUri = new("https://n8n.smartkumon.co.kr/webhook-test/create");
     
 #if !UNITY_EDITOR && UNITY_WEBGL
     [DllImport("__Internal")]
@@ -34,19 +35,15 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
     
     
     public Loading loading;
-    public CanvasScaler canvasScaler;
     public EnhancedGrid person1Grid;
+    public TMP_InputField person1ChatInputField;
     public GameObject chatFromMeCellPrefab;
     public GameObject chatFromOtherPersonCellPrefab;
     public RectOffset chatCellPadding;
+    public TMP_Text chatTemplateText; // Template text label to calculate the text size based on Unity's content size fitter component
+    public TMP_Dropdown tableDropdown;
+    public Toggle debugToggle;
     
-    /// <summary>
-	/// Template text label to calculate the text size based on Unity's
-	/// content size fitter component
-	/// </summary>
-    public TMP_Text chatTemplateText;
-    
-    public TMP_InputField person1ChatInputField;
     
     private List<Chat> _chats;
     private RectTransform _chatTemplateRectTransform;
@@ -151,7 +148,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
 
         chatInputField.text = "";
 #if !UNITY_EDITOR && UNITY_WEBGL
-        chatInputField.GetComponent<WebGLSupport.WebGLInput>().SyncText();
+        chatInputField.GetComponent<WebGLSupport.WebGLInput>();
 #endif
 
         // recalculate the grids, scrolling to the bottom
@@ -169,6 +166,8 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         
         var body = JsonConvert.SerializeObject(new RequestAIChat
         {
+            model = "",
+            tableName = tableDropdown.options[tableDropdown.value].text,
             messages = new RequestAIChatMessage[]
             {
                 new() { role = "user", content = chatInput}
@@ -179,7 +178,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         var respond = string.Empty;
         for (var i = 0; i < retryCount && string.IsNullOrEmpty(respond); i++)
         {
-            using var request = UnityWebRequest.Post(AIChatUri, body, "application/json");
+            using var request = UnityWebRequest.Post(!debugToggle.isActiveAndEnabled || !debugToggle ? AIChatUri : AIChatTestUri, body, "application/json");
             request.certificateHandler = new BypassCertificate();
             await request.SendWebRequest();
 

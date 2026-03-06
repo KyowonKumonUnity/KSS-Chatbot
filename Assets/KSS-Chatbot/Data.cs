@@ -11,6 +11,8 @@ public class Chat
 
 public class RequestAIChat
 {
+    public string model;
+    public string tableName;
     public RequestAIChatMessage[] messages;
 }
 
