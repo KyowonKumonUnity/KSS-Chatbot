@@ -123,7 +123,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         Canvas.ForceUpdateCanvases();
         return new CellProperties()
         {
-            minSize = new Vector2(_person1GridRt.rect.size.x - 20, _chats[dataIndex].cellHeight),
+            minSize = new Vector2(_person1GridRt.rect.size.x - 30, _chats[dataIndex].cellHeight),
             expansionWeight = 0f
         };
     }
