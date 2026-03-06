@@ -148,7 +148,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
 
         chatInputField.text = "";
 #if !UNITY_EDITOR && UNITY_WEBGL
-        chatInputField.GetComponent<WebGLSupport.WebGLInput>();
+        chatInputField.GetComponent<WebGLSupport.WebGLInput>().SyncText();
 #endif
 
         // recalculate the grids, scrolling to the bottom
