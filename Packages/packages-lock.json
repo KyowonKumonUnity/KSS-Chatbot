@@ -9,6 +9,15 @@
       },
       "hash": "1a448a8e13f90262cff0984e078cc8e4381b3268"
     },
+    "com.kumon.unityplugins.projectmanager": {
+      "version": "https://github.com/KyowonKumonUnity/ProjectManager.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.textmeshpro": "1.0.0"
+      },
+      "hash": "b87fbdf49d5ddf65b9779045b7bfbba7888e1246"
+    },
     "com.neuecc.unirx": {
       "version": "7.1.0",
       "depth": 0,
@@ -177,6 +186,14 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.unity.textmeshpro": {
+      "version": "5.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      }
     },
     "com.unity.ugui": {
       "version": "2.0.0",

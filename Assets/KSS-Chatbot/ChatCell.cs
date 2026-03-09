@@ -1,5 +1,5 @@
 using echo17.EnhancedUI.EnhancedGrid;
-using LCHFramework.Extensions;
+using KumonProjectManager;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ public class ChatCell : BasicGridCell
     public RectTransform backgroundRectTransform;
     public string cellIdentifier;
         
-    private TMP_Text[] ChatLabels => _chatLabels.IsEmpty() ? _chatLabels = GetComponentsInChildren<TMP_Text>() : _chatLabels;
+    private TMP_Text[] ChatLabels => _chatLabels ??= GetComponentsInChildren<TMP_Text>();
     private TMP_Text[] _chatLabels;
 
     public void UpdateCell(Chat data, float cellTemplateWidthWithPadding)

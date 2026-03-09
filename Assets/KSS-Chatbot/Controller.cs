@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using echo17.EnhancedUI.EnhancedGrid;
-using LCHFramework.Extensions;
 using Newtonsoft.Json;
 using TMPro;
 using UniRx;
@@ -155,11 +154,11 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         
         person1Grid.RecalculateGrid(scrollNormalizedPositionY: 1);
         
-        ReceiveAIChat(chatInputFieldText).Forget();
+        _ = ReceiveAIChatAsync(chatInputFieldText);
     }
 
     private bool isReceivingAIChat;
-    private async Awaitable ReceiveAIChat(string chatInput)
+    private async Awaitable ReceiveAIChatAsync(string chatInput)
     {
         isReceivingAIChat = true;
         loading.Show();

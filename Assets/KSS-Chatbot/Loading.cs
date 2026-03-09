@@ -1,5 +1,5 @@
 using System;
-using LCHFramework.Utilities;
+using KumonProjectManager;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -34,6 +34,6 @@ public class Loading : MonoBehaviour
     public void Hide()
     {
         wrapper.SetActive(false);
-        IDisposableUtility.DisposeAndSetDefault(ref _disposable);
+        IDisposableUtility.DisposeAndSetNull(ref _disposable);
     }
 }
