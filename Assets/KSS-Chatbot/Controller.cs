@@ -166,7 +166,7 @@ public class Controller : MonoBehaviour, IEnhancedGridDelegate
         var messages = new RequestAIChatMessage[_chats.Count + 1];
         for (var i = 0; i < messages.Length; i++) 
             messages[i] = i < messages.Length - 1
-                ? new RequestAIChatMessage { role = i % 2 == 0 ? "user" : "assistant", content = _chats[i].text }
+                ? new RequestAIChatMessage { role = _chats[i].fromPersonID == 1 ? "user" : "assistant", content = _chats[i].text }
                 : new RequestAIChatMessage { role = "user", content = chatInput };
         var body = JsonConvert.SerializeObject(new RequestAIChat
         {
